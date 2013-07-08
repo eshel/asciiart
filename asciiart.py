@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-DEFAULT_CHARSET_FILE = 'digits.charset'
+DEFAULT_CHARSET_FILE = 'decimal.charset'
 INVALID_CHAR_INDICATOR = '?'
 
 ADD_ILLEGAL_LINE_SUFFIX = True
