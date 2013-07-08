@@ -178,10 +178,19 @@ Testing
     * input file
     * expected output file
     * user comments (optional)
+* Test results: summarized results are dumped on a per-scenario basis to stdout upon test completion. Detailed results may be written into a json file via the parameter `-r <results_file>`. Progress can be echoed to console via the `-v` (verbose) parameter.
 
 Test tool syntax (from `python test.py -h`):
 
+    usage: test.py [-h] [-t TESTS_FILE] [-v] [-r REPORT_FILE]
 
+    ASCII Art test utility
+
+    optional arguments:
+      -h, --help      show this help message and exit
+      -t TESTS_FILE   Test scenarios file
+      -v              verbose output
+      -r REPORT_FILE  Output results to report file
 
 
 Charset file format
