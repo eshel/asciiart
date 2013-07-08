@@ -182,15 +182,16 @@ Testing
 
 Test tool syntax (from `python test.py -h`):
 
-    usage: test.py [-h] [-t TESTS_FILE] [-v] [-r REPORT_FILE]
+    usage: test.py [-h] [-t TESTS_FILE] [-v] [-r REPORT_FILE] [--whitespace-exact]
 
     ASCII Art test utility
 
     optional arguments:
-      -h, --help      show this help message and exit
-      -t TESTS_FILE   Test scenarios file
-      -v              verbose output
-      -r REPORT_FILE  Output results to report file
+      -h, --help          show this help message and exit
+      -t TESTS_FILE       test scenarios file
+      -v                  verbose output
+      -r REPORT_FILE      output results to report file
+      --whitespace-exact  will NOT ignore whitespace-only lines if specified
 
 
 Charset file format
