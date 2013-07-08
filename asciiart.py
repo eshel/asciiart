@@ -180,42 +180,6 @@ def decode_ascii_art_to_strings(ascii_art_file, string_file, charset=AsciiArtCha
         string_file.write(line)
 
 
-def test(in_path, expected_output_path, charset=AsciiArtCharset()):
-    with open(in_path, 'r') as fin:
-        results = [l.strip('\n') for l in charset.ascii_art_to_lines(fin)]
-
-    with open(expected_output_path, 'r') as fexp:
-        expected = [l.strip('\n') for l in fexp.readlines()]
-
-    if len(results) > len(expected):
-        raise Exception('More results than expected (%d given, %d expected)' % (len(results), len(expected)))
-    else:
-        good = 0
-        bad = 0
-        for (idx, (r, e)) in enumerate(zip(results, expected)):
-            if (r != e):
-                bad += 1
-                print('[%03d]: "%s" vs "%s"' % (idx, r, e))
-            else:
-                good += 1                
-    return (good, bad)
-
-
-TEST_VECTORS = [
-    ('input_user_story_1.txt', 'output_user_story_1.txt'),
-    ('input_user_story_2.txt', 'output_user_story_2.txt'),
-]
-
-
-def test_all(test_vectors=TEST_VECTORS, charset=AsciiArtCharset()):
-    (good, bad) = (0, 0)
-    for (ipath, epath) in test_vectors:
-        (g, b) = test(ipath, epath, charset)
-        good += g
-        bad += b
-    return (good, bad)
-
-
 def main(argv, fin=sys.stdin, fout=sys.stdout):
     parser = argparse.ArgumentParser(description='Text <--> ASCII Art conversion pipe (stdin --> stdout)')
     parser.add_argument('mode', choices=['encode', 'decode'], nargs=1, help='encode: ascii-art --> text, decode: text --> ascii-art')
