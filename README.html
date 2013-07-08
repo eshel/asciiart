@@ -1,0 +1,222 @@
+<h1 id="asciiart">asciiart</h1>
+
+<p>A python library and command-line pipe tool to handle <a href="http://en.wikipedia.org/wiki/ASCII_art">ASCII-Art</a> to Text conversions.</p>
+
+<h2 id="features">Features</h2>
+
+<ul>
+<li><strong><em>Encoding</em></strong>: convert from string to ascii-art.</li>
+<li><strong><em>Decoding</em></strong>: convert from ascii-art to string.</li>
+<li><strong><em>Customizable charsets</em></strong>: the user may specify a <code>.charset</code> file via the <code>-c</code> switch to select which characters will be supported. <code>decimal.charset</code> is used by default (digits 0-9), <code>hex.charset</code> is also provided (digits 0-9 and a-f, for hexadecimal base).</li>
+<li><strong><em>Illegal character indicators</em></strong>: Whenever an invalid ascii-art character (block) is encountered, it is replaced by a special indicator (<code>?</code> by default).</li>
+<li><strong><em>Illegal character line indicators</em></strong>: When a line with at least one illegal block is decoded, this indicator will be appended to it (<code>ILLEGAL</code> by default).</li>
+<li><strong><em>Block error tolerance</em></strong>: Whenever an invalid ascii-art character (block) is encountered, the program can attempt to fix it buy matching it to a similar block character 'drawing'. The tolerance of the distance function is configurable by a parameter.</li>
+<li><strong><em>Variable line/block-line width</em></strong>: The pipe can handle lines of different widths (both in plaintext and ascii-art forms). Incase a single ascii-art block-line (typically 4 lines high) varies in its line widths, an error is thrown. The last line in a ascii-art block line (typically the 4th line in the plaintext) may be empty or at the exact correct width.</li>
+</ul>
+
+<h2 id="requirements">Requirements</h2>
+
+<p>The program requires python 2.7.x, with no special libraries.</p>
+
+<h2 id="usage">Usage</h2>
+
+<p>The program (asciiart.py) is a command-line pipe (receives input via stdin, outputs to stdout). It may do both encoding (string to ASCII art) and decoding (ASCII art to string) operations.</p>
+
+<p>Detailed usage instructions (from <code>python asciiart.py -h</code>):</p>
+
+<pre><code>usage: asciiart.py [-h] [--charset CS] [--tolerance T] [--no-illegal]
+                   [--invalid_char C]
+                   {encode,decode}
+
+Text &lt;--&gt; ASCII Art conversion pipe (stdin --&gt; stdout)
+
+positional arguments:
+  {encode,decode}   encode: ascii-art --&gt; text, decode: text --&gt; ascii-art
+
+optional arguments:
+  -h, --help        show this help message and exit
+  --charset CS      selects file CS as the ascii-art charset
+  --tolerance T     conversion will tolerate errors of up to distance T
+  --no-illegal      will not print the ILLEGAL suffix in-case of errors
+  --invalid_char C  will use C to indicate an unrecognized ascii-art block
+</code></pre>
+
+<p>Critical errors (e.g. bad file formats, invalid spacing, etc.), trigger an exception, promptly terminating the program.</p>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="encoding-decimal-to-ascii-art">Encoding (decimal to ascii-art)</h3>
+
+<p>Encoding the decimal data in <code>ex1_decimal.txt</code> will yield the results found in <code>ex1_art.txt</code>:</p>
+
+<pre><code>python asciiart.py encode &lt; ex1_decimal.txt &gt; ex1_art.txt
+</code></pre>
+
+<p>Output (in <code>ex1_art.txt</code>):</p>
+
+<pre><code>    _  _  _     _  _ 
+  ||_  _||_ |_| _||_ 
+  ||_||_  _|  | _| _|
+
+       _    
+  |  | _|  |
+  |  ||_   |
+</code></pre>
+
+<h3 id="decoding-ascii-art-to-decimal">Decoding (ascii-art to decimal)</h3>
+
+<p>Decoding the ascii-art data in <code>ex1_art.txt</code> will yiedl the results found in <code>ex1_decimal.txt</code>:</p>
+
+<pre><code>python asciiart.py decode &lt; ex1_art.txt &gt; ex1_decimal.txt
+</code></pre>
+
+<p>Output (in <code>ex1_decimal.txt</code>):</p>
+
+<pre><code>1625435
+1121
+</code></pre>
+
+<h3 id="encoding-from-directly-from-stdin">Encoding from directly from stdin</h3>
+
+<p>Input may be written directly to the command line, and terminated by an EOF character (<code>Ctrl+Z</code>):</p>
+
+<pre><code>python asciiart.py encode
+72672221
+45391023
+^Z
+</code></pre>
+
+<p>Output (same as <code>ex2_art.txt</code>):</p>
+
+<pre><code> _  _  _  _  _  _  _
+  | _||_   | _| _| _|  |
+  ||_ |_|  ||_ |_ |_   |
+
+    _  _  _     _  _  _
+|_||_  _||_|  || | _| _|
+  | _| _| _|  ||_||_  _|
+</code></pre>
+
+<h3 id="decoding-erroneous-input">Decoding erroneous input</h3>
+
+<p>Incase of decoding errors, a '?' character replaces all unrecognized characters, and an ' INVALID' string is appended to the end of the decoded line. In <code>ex2_art_error1.txt</code>, the <code>2</code> digits in the first line have their middle line removed:</p>
+
+<pre><code>python asciiart.py decode &lt; ex2_art_error1.txt &gt; ex2_decimal_error1.txt
+</code></pre>
+
+<p>Output:</p>
+
+<pre><code>7267???1 ILLEGAL
+45391023
+</code></pre>
+
+<h3 id="controlling-error-indications">Controlling error indications</h3>
+
+<p>We can customize the error indication character (default '?') to some other character (in this example we will use '_') using the <code>--invalid_char</code> option, and remote the ' ILLEGAL' suffixes using the <code>--no-illegal</code> switch:</p>
+
+<pre><code>python asciiart.py decode --invalid_char _ --no-illegal &lt; ex2_art_error1.txt
+</code></pre>
+
+<p>Output:</p>
+
+<pre><code>7267___1
+45391023
+</code></pre>
+
+<h3 id="automatically-fixing-errors">Automatically fixing errors</h3>
+
+<p>We can instruct the program to automatically attempt to fix erroneous block characters (ascii-art), by replacing these with visually-similar blocks. For example, in the erronous input inside <code>ex2_art_error1.txt</code>, the program will recognize the bad '2' characters in the first line are only one character apart from the good representation of '2'. By increasing the error tolerance from the default 0 to 1 (<code>--tolerance 1</code>), we will automatically fix these errors:</p>
+
+<pre><code>python asciiart.py decode --tolerance 1 &lt; ex2_art_error1.txt &gt; ex2_decimal_error1_recovered.txt
+</code></pre>
+
+<p>Output (in <code>ex2_decimal_error1_recovered.txt</code>):</p>
+
+<pre><code>72672221
+45391023
+</code></pre>
+
+<h3 id="using-different-charsets-hexadecimal">Using different charsets (hexadecimal)</h3>
+
+<p>We can select charsets different from the default decimal (<code>decimal.charset</code>), by using the <code>--charset</code> switch. In this example, we will use a hexadecimal charset (0-9 and a-f):</p>
+
+<pre><code>python asciiart.py encode --charset hex.charset &lt; ex3_hex.txt &gt; ex3_art.txt
+</code></pre>
+
+<p>Input (in <code>ex3_hex.txt</code>):</p>
+
+<pre><code>deadbeef
+2377992020
+6d92d
+fffffff
+</code></pre>
+
+<p>Output (in <code>ex3_art.txt</code>):</p>
+
+<pre><code>    _  _        _  _  _
+ _||_ |_| _||_ |_ |_ |_
+|_||_ | ||_||_||_ |_ |
+
+ _  _  _  _  _  _  _  _  _  _
+ _| _|  |  ||_||_| _|| | _|| |
+|_  _|  |  | _| _||_ |_||_ |_|
+
+ _     _  _
+|_  _||_| _| _|
+|_||_| _||_ |_|
+
+ _  _  _  _  _  _  _
+|_ |_ |_ |_ |_ |_ |_
+|  |  |  |  |  |  |
+</code></pre>
+
+<p>All other flags previously exemplified work exactly the same with non-default charsets such as this.</p>
+
+<h2 id="testing">Testing</h2>
+
+<ul>
+<li>Testing is done via the <code>test.py</code> tool, which compares the result of an encoding or decoding operation on an input file versus an expected output file. </li>
+<li>Test operation: If all lines of the operation result are identical to the expected output file, the test is considered successful. Otherwise, errors are enumerated on a per-line basis, and reported to the runner.</li>
+<li>Test scenarios: each test scenario is specified by a JSON entry, which includes the following data:
+<ul>
+<li>test scenario alias (for printing)</li>
+<li>asciiart.py arguments (e.g. <code>asciiart.py encode --tolerance 1</code>)</li>
+<li>input file</li>
+<li>expected output file</li>
+<li>user comments (optional)</li>
+</ul></li>
+<li>Test results: summarized results are dumped on a per-scenario basis to stdout upon test completion. Detailed results may be written into a json file via the parameter <code>-r &lt;results_file&gt;</code>. Progress can be echoed to console via the <code>-v</code> (verbose) parameter.</li>
+</ul>
+
+<p>Test tool syntax (from <code>python test.py -h</code>):</p>
+
+<pre><code>usage: test.py [-h] [-t TESTS_FILE] [-v] [-r REPORT_FILE] [--whitespace-exact]
+
+ASCII Art test utility
+
+optional arguments:
+  -h, --help          show this help message and exit
+  -t TESTS_FILE       test scenarios file
+  -v                  verbose output
+  -r REPORT_FILE      output results to report file
+  --whitespace-exact  will NOT ignore whitespace-only lines if specified
+</code></pre>
+
+<h2 id="charset-file-format">Charset file format</h2>
+
+<p>ascii-art character sets are specified via a text file containing the following data fields:</p>
+
+<pre><code>block-width
+block-height
+string-characters
+block-drawings
+</code></pre>
+
+<ul>
+<li><code>block-width</code>: specifies the width in characters of each ascii-art block character (included charsets use <code>3</code>).</li>
+<li><code>block-height</code>: specifies the height in lines of each ascii-art block character (included charsets use <code>4</code>).</li>
+<li><code>string-characters</code>: the <code>N</code> characters to be used in plaintext form (regular characters, i.e. <code>1234567890</code> for decimal digits)</li>
+<li><code>block-drawings</code>: the ascii-art blocks corresponding to the above string-characters. All <code>block-height</code> lines must be exactly <code>block-width</code> characters wide. All <code>N</code> block characters must be of exact dimensions <code>block-width * block-height</code>, resulting in exactly <code>N * block-width * block-height</code> being required for this field.</li>
+</ul>
+
+<p>All the above fields are separated by a newline character (<code>\n</code>).</p>

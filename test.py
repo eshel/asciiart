@@ -7,7 +7,7 @@ import re
 from asciiart import main as run_asciiart
 
 
-DEFAULT_TESTS_FILE = 'test_scenarios.json'
+DEFAULT_TESTS_FILE = 'tests/scenarios.json'
 DIFF_REGION_LINES_RADIUS = 2
 
 whitespace_only_line = re.compile("^[\s]*$")
