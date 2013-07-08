@@ -1,0 +1,20 @@
+{
+	"user_story_1_decode": {
+		"args": "decode",
+		"in": "input_user_story_1.txt",
+		"out": "output_user_story_1.txt",
+		"description": "User Story #1: Decode"
+	},
+	"user_story_2_decode": {
+		"args": "decode",
+		"in": "input_user_story_2.txt",
+		"out": "output_user_story_2.txt",
+		"description": "User Story #2: Decode"
+	},
+	"user_story_1_encode": {
+		"args": "encode",
+		"in": "output_user_story_1.txt",
+		"out": "input_user_story_1.txt",
+		"description": "User Story #1: Encode"
+	}
+}

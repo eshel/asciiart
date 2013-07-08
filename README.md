@@ -26,21 +26,21 @@ The program (asciiart.py) is a command-line pipe (receives input via stdin, outp
 
 Detailed usage instructions (from `python asciiart.py -h`):
 
-	usage: asciiart.py [-h] [--charset CS] [--tolerance T] [--no-illegal]
-	                   [--invalid_char C]
-	                   {encode,decode}
+    usage: asciiart.py [-h] [--charset CS] [--tolerance T] [--no-illegal]
+                       [--invalid_char C]
+                       {encode,decode}
 
-	Text <--> ASCII Art conversion pipe (stdin --> stdout)
+    Text <--> ASCII Art conversion pipe (stdin --> stdout)
 
-	positional arguments:
-	  {encode,decode}   encode: ascii-art --> text, decode: text --> ascii-art
+    positional arguments:
+      {encode,decode}   encode: ascii-art --> text, decode: text --> ascii-art
 
-	optional arguments:
-	  -h, --help        show this help message and exit
-	  --charset CS      selects file CS as the ascii-art charset
-	  --tolerance T     conversion will tolerate errors of up to distance T
-	  --no-illegal      will not print the ILLEGAL suffix in-case of errors
-	  --invalid_char C  will use C to indicate an unrecognized ascii-art block
+    optional arguments:
+      -h, --help        show this help message and exit
+      --charset CS      selects file CS as the ascii-art charset
+      --tolerance T     conversion will tolerate errors of up to distance T
+      --no-illegal      will not print the ILLEGAL suffix in-case of errors
+      --invalid_char C  will use C to indicate an unrecognized ascii-art block
 
 Critical errors (e.g. bad file formats, invalid spacing, etc.), trigger an exception, promptly terminating the program.
 
@@ -50,7 +50,7 @@ Examples
 ### Encoding (decimal to ascii-art) ###
 Encoding the decimal data in `ex1_decimal.txt` will yield the results found in `ex1_art.txt`:
 
-	python asciiart.py encode < ex1_decimal.txt > ex1_art.txt
+    python asciiart.py encode < ex1_decimal.txt > ex1_art.txt
 
 Output (in `ex1_art.txt`):
 
@@ -68,25 +68,25 @@ Output (in `ex1_art.txt`):
 
 Decoding the ascii-art data in `ex1_art.txt` will yiedl the results found in `ex1_decimal.txt`:
 
-	python asciiart.py decode < ex1_art.txt > ex1_decimal.txt
+    python asciiart.py decode < ex1_art.txt > ex1_decimal.txt
 
 Output (in `ex1_decimal.txt`):
 
-	1625435
-	1121
+    1625435
+    1121
 
 
 ### Encoding from directly from stdin ###
 
 Input may be written directly to the command line, and terminated by an EOF character (`Ctrl+Z`):
 
-	python asciiart.py encode
-	72672221
-	45391023
-	^Z
+    python asciiart.py encode
+    72672221
+    45391023
+    ^Z
 
 Output (same as `ex2_art.txt`):
-    	
+        
      _  _  _  _  _  _  _
       | _||_   | _| _| _|  |
       ||_ |_|  ||_ |_ |_   |
@@ -100,7 +100,7 @@ Output (same as `ex2_art.txt`):
 
 Incase of decoding errors, a '?' character replaces all unrecognized characters, and an ' INVALID' string is appended to the end of the decoded line. In `ex2_art_error1.txt`, the `2` digits in the first line have their middle line removed:
 
-	python asciiart.py decode < ex2_art_error1.txt > ex2_decimal_error1.txt
+    python asciiart.py decode < ex2_art_error1.txt > ex2_decimal_error1.txt
 
 
 Output:
@@ -170,6 +170,17 @@ All other flags previously exemplified work exactly the same with non-default ch
 Testing
 -------
 
+* Testing is done via the `test.py` tool, which compares the result of an encoding or decoding operation on an input file versus an expected output file. 
+* Test operation: If all lines of the operation result are identical to the expected output file, the test is considered successful. Otherwise, errors are enumerated on a per-line basis, and reported to the runner.
+* Test scenarios: each test scenario is specified by a JSON entry, which includes the following data:
+    * test scenario alias (for printing)
+    * asciiart.py arguments (e.g. `asciiart.py encode --tolerance 1`)
+    * input file
+    * expected output file
+    * user comments (optional)
+
+Test tool syntax (from `python test.py -h`):
+
 
 
 
@@ -177,11 +188,11 @@ Charset file format
 -------------------
 
 ascii-art character sets are specified via a text file containing the following data fields:
-	
-	block-width
-	block-height
-	string-characters
-	block-drawings
+    
+    block-width
+    block-height
+    string-characters
+    block-drawings
 
 * `block-width`: specifies the width in characters of each ascii-art block character (included charsets use `3`).
 * `block-height`: specifies the height in lines of each ascii-art block character (included charsets use `4`).

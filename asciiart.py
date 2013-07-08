@@ -180,20 +180,6 @@ def decode_ascii_art_to_strings(ascii_art_file, string_file, charset=AsciiArtCha
         string_file.write(line)
 
 
-def compare_ascii_art(lines1, lines2):
-    if len(lines1) != len(lines2):
-        return False
-    else:
-        for (l1, l2) in zip(lines1, lines2):
-            if l1 != l2:
-                return False
-        return True
-
-
-def compare_strings(l1, l2):
-    return l1 == l2
-
-
 def test(in_path, expected_output_path, charset=AsciiArtCharset()):
     with open(in_path, 'r') as fin:
         results = [l.strip('\n') for l in charset.ascii_art_to_lines(fin)]
@@ -230,18 +216,16 @@ def test_all(test_vectors=TEST_VECTORS, charset=AsciiArtCharset()):
     return (good, bad)
 
 
-def main():
+def main(argv, fin=sys.stdin, fout=sys.stdout):
     parser = argparse.ArgumentParser(description='Text <--> ASCII Art conversion pipe (stdin --> stdout)')
     parser.add_argument('mode', choices=['encode', 'decode'], nargs=1, help='encode: ascii-art --> text, decode: text --> ascii-art')
     parser.add_argument('--charset', default=DEFAULT_CHARSET_FILE, dest='charset_path', metavar='CS', help='selects file CS as the ascii-art charset')
     parser.add_argument('--tolerance', type=int, default=0, metavar='T', dest='error_tolerance', help='conversion will tolerate errors of up to distance T')
     parser.add_argument('--no-illegal', action='store_false', dest='illegal_suffix', help='will not print the ILLEGAL suffix in-case of errors')
     parser.add_argument('--invalid_char', type=str, dest='invalid_char', metavar='C', default='?', help='will use C to indicate an unrecognized ascii-art block')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     trans_mode = args.mode[0]
-    fin = sys.stdin
-    fout = sys.stdout
     tolerance = args.error_tolerance
 
     if args.illegal_suffix:
@@ -263,5 +247,6 @@ def main():
     elif trans_mode == 'decode':
         decode_ascii_art_to_strings(fin, fout, charset)
 
+
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
